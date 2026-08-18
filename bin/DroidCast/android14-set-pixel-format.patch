@@ -1,0 +1,12 @@
+diff --git a/app/src/main/java/ink/mol/droidcast_raw/ScreenCaptorUtils.kt b/app/src/main/java/ink/mol/droidcast_raw/ScreenCaptorUtils.kt
+--- a/app/src/main/java/ink/mol/droidcast_raw/ScreenCaptorUtils.kt
++++ b/app/src/main/java/ink/mol/droidcast_raw/ScreenCaptorUtils.kt
+@@ -106,7 +106,7 @@ object ScreenCaptorUtils {
+                             Int::class.java
+                         )
+                     val setPixelFormatMethod: Method =
+-                        displayCaptureArgsBuilderClass.getDeclaredMethod(
++                        displayCaptureArgsBuilderClass.getMethod(
+                             "setPixelFormat",
+                             Int::class.java
+                         )

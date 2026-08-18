@@ -79,7 +79,7 @@ def retry(func):
                 logger.error(e)
 
                 def init():
-                    pass
+                    self.droidcast_init()
             # Unknown
             except Exception as e:
                 logger.exception(e)
@@ -155,17 +155,26 @@ class DroidCast(Uiautomator2):
         self.adb_push(self.config.DROIDCAST_FILEPATH_LOCAL, self.config.DROIDCAST_FILEPATH_REMOTE)
 
         logger.info('Starting DroidCast apk')
-        # DroidCast_raw-release-1.0.apk
-        # CLASSPATH=/data/local/tmp/DroidCast_raw.apk app_process / ink.mol.droidcast_raw.Main > /dev/null
-        # adb shell CLASSPATH=/data/local/tmp/DroidCast_raw.apk app_process / ink.mol.droidcast_raw.Main
-        resp = self.u2_shell_background([
+
+        command = []
+
+        if self.sdk_ver >= 34:
+            command.append('LD_PRELOAD=/system/lib64/libandroid_servers.so')
+
+        command += [
             'CLASSPATH=/data/local/tmp/DroidCast_raw.apk',
             'app_process',
             '/',
             'ink.mol.droidcast_raw.Main',
             '>',
-            '/dev/null'
-        ])
+            '/dev/null',
+        ]
+        # DroidCast_raw-release-1.1.apk
+        # Android 14 on 64-bit devices requires libandroid_servers.so.
+        # LD_PRELOAD=/system/lib64/libandroid_servers.so CLASSPATH=/data/local/tmp/DroidCast_raw.apk \
+        #     app_process / ink.mol.droidcast_raw.Main > /dev/null
+        resp = self.u2_shell_background(command)
+
         logger.info(resp)
         del_cached_property(self, 'droidcast_session')
         _ = self.droidcast_session
